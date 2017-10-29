@@ -1,6 +1,6 @@
 define(['RequireProxy'], function (Proxy) {
     'use strict';
-    var Base = Proxy.get('UiBase'), utils = Proxy.get('utils'), Spy = Proxy.get('Spy');
+    var Base = Proxy.get('UiBase'), utils = Proxy.get('utils'), Spy = Proxy.get('Spy'), $ = window.$;
     // 'text!../templates/textBox.html'
     return {
         parent: 'UiBase',
@@ -16,7 +16,7 @@ define(['RequireProxy'], function (Proxy) {
                     ['initVars'],               // Declare Initialize variables
                     ['initRender', true],   // Initial rendering
                     ['initProps'],              // Set initialize properties
-                    ['initCss',],   // Initialize CSS
+                    ['initCss'],   // Initialize CSS
                     ['initEvents'],             // Binding events for this main dom object
                     ['initSubscribers'],        // Subscribe variables
                     ['value', false, this.options.defaultValue], // Set initialize value
@@ -34,7 +34,7 @@ define(['RequireProxy'], function (Proxy) {
                 var controller = this, $element = $(controller.element);
                 if ($element[0].tagName.toUpperCase() !== 'INPUT') {
                     require(['text!../templates/textBox.html'], function (template) {
-                        requestAnimationFrame(function () {
+                        window.requestAnimationFrame(function () {
                             $element.empty().append(template);
                             controller.$input = $element.children('input');
                             batman.notify();
@@ -65,7 +65,7 @@ define(['RequireProxy'], function (Proxy) {
                 var controller = this, opts = controller.options, $input = controller.$input,
                     validate = utils.getBoolean(opts.validate), validateDely = utils.getNumber(opts['validate-delay']),
                     validateTimer = null;
-                validateDely = validateDely === null? 300: validateDely;
+                validateDely = validateDely === null ? 300 : validateDely;
                 $input.bind('input propertychange', function () {
                     var value = controller.$input.val();
                     controller.value(controller.unSupportPlaceholder && $input.not(':focus') && value === opts.placeholder ? null : value);

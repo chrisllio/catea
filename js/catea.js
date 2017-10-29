@@ -1,6 +1,5 @@
 'use strict';
 require(['config', './widgetsConfig'], function (config, widgetsConfig) {
-    //document.createElement('textBox');
     config.initialize(widgetsConfig);
     require(['UiManager', 'jquery', 'Commander'], function (UiManager, $) {
         $.catea = $.extend($.catea, {}, {uiManager:UiManager});

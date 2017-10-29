@@ -22,7 +22,7 @@
             Spy: 'core/spy',
             RequireProxy: 'core/require-proxy',
             // build
-            Catea: 'catea',
+            Catea: 'catea'
         },
         shim: {},
         modules: [{

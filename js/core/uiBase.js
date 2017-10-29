@@ -1,5 +1,6 @@
-define(['jquery', 'Class', 'uiConstants', 'Spy', 'utils', 'Commander', 'Mustache', 'prototype', 'json2'], function ($, Class, Constants, Spy, utils, Commander, Mustache) {
+define(['Class', 'uiConstants', 'Spy', 'utils', 'Commander', 'Mustache', 'prototype', 'json2'], function (Class, Constants, Spy, utils, Commander, Mustache) {
     'use strict';
+    var $ = window.$;
     return {
         /**
          * ui-widget base class
@@ -18,9 +19,11 @@ define(['jquery', 'Class', 'uiConstants', 'Spy', 'utils', 'Commander', 'Mustache
                 controller.eventProxy = $({});
                 if (settings.valueType) {
                     controller._value = Spy[settings.valueType === Array ? 'observableArray' : 'observable'](null);
-                    if (controller.options.name && dataRenderer) valueSubscribers.push(function (value) {
-                        dataRenderer.set(controller.options.name, value)
-                    });
+                    if (controller.options.name && dataRenderer) {
+                        controller._value.subscribe(function (value) {
+                            dataRenderer.set(controller.options.name, value)
+                        });
+                    }
                 }
                 if (settings.dataType) {
                     controller._data = Spy[settings.dataType === Constants.Array ? 'observableArray' : 'observable'](null);
@@ -108,7 +111,9 @@ define(['jquery', 'Class', 'uiConstants', 'Spy', 'utils', 'Commander', 'Mustache
                         }
                     }
                 }
-                if (validateHandler !== null) validateHandler.apply(controller, [result]);
+                if (typeof validateHandler === 'function') {
+                    validateHandler.apply(controller, [result]);
+                }
                 return result;
             },
             validate: function () {
