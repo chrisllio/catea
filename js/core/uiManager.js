@@ -1,6 +1,7 @@
-define(['jquery', 'Class', 'UiBase', 'AnimationFrame', 'Spy', 'utils', 'Map', 'WidgetsConfig', 'prototype'], function ($, Class, Base, AnimationFrame, Spy, utils, Map, WidgetsConfig) {
+define(['Class', 'UiBase', 'AnimationFrame', 'Spy', 'utils', 'Map', 'WidgetsConfig', 'prototype'], function (Class, Base, AnimationFrame, Spy, utils, Map, WidgetsConfig) {
     'use strict';
-    var widgetMap = new Map(),
+    var $ = window.$,
+        widgetMap = new Map(),
         controllerShellDataName = '__widget_shEll_dAta_keY_',
         controllerWidgetNameKey = '__widget_nAMe_dAta_keY_',
         widgetClassName = 'catea-widget',
@@ -103,7 +104,7 @@ define(['jquery', 'Class', 'UiBase', 'AnimationFrame', 'Spy', 'utils', 'Map', 'W
                     }
                 }
                 var selector = widgetSelectors.join(','), $targets = $container.find(selector).not(function () {
-                    $(this).closest(selector).length > 0;
+                    return $(this).parents(selector).length > 0;
                 });
                 var result = 0, success = 0;
                 $targets.each(function () {

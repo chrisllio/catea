@@ -112,7 +112,7 @@ define(['Class', 'uiConstants', 'Spy', 'utils', 'Commander', 'Mustache', 'protot
                     }
                 }
                 if (typeof validateHandler === 'function') {
-                    validateHandler.apply(controller, [result]);
+                    validateHandler.apply(controller, [result, controller.element]);
                 }
                 return result;
             },
