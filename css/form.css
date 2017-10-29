@@ -1,0 +1,44 @@
+.catea-widget {
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
+}
+input.catea-widget::-ms-clear {
+    display: none;
+}
+input.catea-widget{
+    border-radius: 3px;
+    border: 1px solid #999;
+    padding: 5px 10px;
+    color:#333;
+    margin: 0px;
+    width: 100%;
+    min-width: 120px;
+    position: relative;
+    display: block;
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+}
+input[disabled].catea-widget{
+    background-color: #ebebe4;
+    cursor: not-allowed;
+}
+input[readonly].catea-widget{
+    background-color: #f1f1f1;
+}
+input.catea-widget.big{
+    font-size: 1.5em;
+}
+input.catea-widget.large{
+    font-size: 2em;
+}
+input.catea-widget.sm{
+    font-size: .8em;
+}
+input.catea-widget.no-border{
+    border:none;
+}
+input.catea-widget.empty {
+    color: #868686;
+}
