@@ -1,1 +1,0 @@
-define([],function(){return{textBox:{path:"module/textBox",buildType:"base",renderType:1,valueType:String,WaitForInitRender:!1}}});
