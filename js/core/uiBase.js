@@ -1,11 +1,11 @@
-define(['jquery', 'Class', 'uiConstants', 'Spy', 'utils', 'Commander', 'Mustache', 'TemplateManager', 'prototype'], function ($, Class, Constants, Spy, utils, Commander, Mustache) {
+define(['jquery', 'Class', 'uiConstants', 'Spy', 'utils', 'Commander', 'Mustache', 'TemplateManager'], function ($, Class, Constants, Spy, utils, Commander, Mustache) {
     'use strict';
     return {
         /**
          * ui-widget base class
          */
         core: {
-            init: function (element, options, settings, widgetName, dataRenderer, renderCallback) {
+            init: function (element, options, settings, widgetName, dataAdapter, renderCallback) {
                 var controller = this;
                 controller.widgetName = widgetName;
                 var callBackFn = utils.findFunction(renderCallback);
@@ -16,12 +16,16 @@ define(['jquery', 'Class', 'uiConstants', 'Spy', 'utils', 'Commander', 'Mustache
                 controller.options = options;
                 controller.validateHandler = utils.findFunction(options['validate-handler']);
                 controller.eventProxy = $({});
-                if (settings.valueType) {
+                if (controller.options.name && settings.valueType) {
                     controller._value = Spy[settings.valueType === Array ? 'observableArray' : 'observable'](null);
-                    if (controller.options.name && dataRenderer) {
+                    if (controller.options.name && dataAdapter) {
+                        var adapter = new dataAdapter(controller.options.name, controller), initValue = adapter.get();
                         controller._value.subscribe(function (value) {
-                            dataRenderer.set(controller.options.name, value)
+                            adapter.set(value);
                         });
+                        controller.value(initValue === undefined? options.defaultValue: initValue);
+                    } else {
+                        controller.value(options.defaultValue);
                     }
                 }
                 if (settings.dataType) {
@@ -79,10 +83,10 @@ define(['jquery', 'Class', 'uiConstants', 'Spy', 'utils', 'Commander', 'Mustache
                 }
             },
             fire: function (eventName) {
-                this.$main.trigger(eventName);
+                this.eventProxy.trigger(eventName);
             },
             on: function (events, callback) {
-                this.$main.on(events, callback);
+                this.eventProxy.on(events, callback);
             },
             hide: function(){
                 $(this.element).hide();

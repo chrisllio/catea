@@ -36,7 +36,6 @@ define(['jquery', 'Class', 'UiBase', 'AnimationFrame', 'Spy', 'utils', 'Map', 'c
                             widgetMap.put(widgetName + '.methods', methods);
                             widgetMap.put(widgetName + '.settings', Widget.settings);
                             widgetMap.put(widgetName + '.defaults', Widget.defaults);
-                            widgetMap.put(widgetName + '.dataRenderer', Widget.dataRenderer);
                             $.fn[widgetName] = function () {
                                 var args = Array.prototype.slice.call(arguments),
                                     _widgetName = $(this).data(controllerWidgetNameKey);
@@ -53,8 +52,8 @@ define(['jquery', 'Class', 'UiBase', 'AnimationFrame', 'Spy', 'utils', 'Map', 'c
             }
         },
         manager = {
-            getTemplate: function(html){
-                if(!templateMap[html]) {
+            getTemplate: function (html) {
+                if (!templateMap[html]) {
                     templateMap[html] = Mustache.parse(html);
                 }
                 return templateMap[html];
@@ -69,39 +68,43 @@ define(['jquery', 'Class', 'UiBase', 'AnimationFrame', 'Spy', 'utils', 'Map', 'c
                             widgetClass = widgetMap.get(widgetName + '.class'),
                             methods = widgetMap.get(widgetName + '.methods'),
                             widgetSetting = widgetMap.get(widgetName + '.settings'),
-                            dataRenderer = widgetMap.get(widgetName + '.dataRenderer');
-                        new widgetClass(element, opts, widgetSetting, widgetName, dataRenderer ? new dataRenderer : null, function () {
-                            var controller = this;
-                            shell = {
-                                execute: function () {
-                                    if (arguments.length === 0) return;
-                                    var args = Array.prototype.slice.call(arguments);
-                                    var methodName = args.shift();
-                                    if (typeof methodName === 'string') {
-                                        return this[methodName].apply(this, args);
+                            dataAdapter = config.widgets[widgetName].dataAdapter;
+                        dataAdapter = dataAdapter ? dataAdapter : 'dataAdapter-default';
+                        require([dataAdapter], function (dataAdapter) {
+                            new widgetClass(element, opts, widgetSetting, widgetName, dataAdapter, function () {
+                                var controller = this;
+                                shell = {
+                                    execute: function () {
+                                        if (arguments.length === 0) return;
+                                        var args = Array.prototype.slice.call(arguments);
+                                        var methodName = args.shift();
+                                        if (typeof methodName === 'string') {
+                                            return this[methodName].apply(this, args);
+                                        }
+                                    }
+                                };
+                                for (var methodName in methods) {
+                                    if (!methodName.startWith('_') && methods.hasOwnProperty(methodName)) {
+                                        (function (name) {
+                                            shell[name] = function () {
+                                                var ret = controller[name].apply(controller, arguments);
+                                                return ret === controller ? this : ret;
+                                            }
+                                        })(methodName);
                                     }
                                 }
-                            };
-                            for (var methodName in methods) {
-                                if (!methodName.startWith('_') && methods.hasOwnProperty(methodName)) {
-                                    (function (name) {
-                                        shell[name] = function () {
-                                            var ret = controller[name].apply(controller, arguments);
-                                            return ret === controller ? this : ret;
-                                        }
-                                    })(methodName);
-                                }
-                            }
-                            $element.data(controllerShellDataName, shell);
-                            $element.data(controllerWidgetNameKey, widgetName);
-                            var callback = typeof renderCallback === 'function' ? renderCallback : window[renderCallback];
-                            if (callback) callback();
+                                $element.data(controllerShellDataName, shell);
+                                $element.data(controllerWidgetNameKey, widgetName);
+                                var callback = typeof renderCallback === 'function' ? renderCallback : window[renderCallback];
+                                if (callback) callback();
+                            });
                         });
                     });
                 }
             },
             initialize: function (container, callback) {
-                var $container = $(container), widgetSelectors = ['.' + widgetClassName], tagMap = {}, _this = this, WidgetsConfig = config.widgets;
+                var $container = $(container), widgetSelectors = ['.' + widgetClassName], tagMap = {}, _this = this,
+                    WidgetsConfig = config.widgets;
                 for (var name in WidgetsConfig) {
                     if (WidgetsConfig.hasOwnProperty(name)) {
                         widgetSelectors.push(name);

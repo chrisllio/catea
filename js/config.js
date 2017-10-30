@@ -21,7 +21,10 @@ define(function(){
             utils: 'core/utils',
             Spy: 'core/spy',
             TemplateManager: 'core/templateManager',
-            RequireProxy: 'core/require-proxy'
+            RequireProxy: 'core/require-proxy',
+            dataCenter: 'core/dataCenter',
+            'dataAdapter-default': 'core/dataAdapter-dc'
+
         },
         shim: {},
         widgets: {

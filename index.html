@@ -13,8 +13,13 @@
     <![endif]-->
     <script type="text/javascript" src='js/lib/require.js' data-main='js/catea' charset="utf-8" defer async="true"></script>
     <script type="text/javascript">
+        function pre_init(){
+            $.catea.DataCenter.set('name', 'Hello Catea');
+        }
         function init(){
 
+
+           // alert(JSON.stringify($.catea.DataCenter))
         }
     </script>
 </head>

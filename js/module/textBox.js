@@ -20,7 +20,6 @@ define(['RequireProxy'], function (Proxy) {
                     ['initCss'],   // Initialize CSS
                     ['initEvents'],             // Binding events for this main dom object
                     ['initSubscribers'],        // Subscribe variables
-                    ['value', false, this.options.defaultValue], // Set initialize value
                     ['afterInit'],              // Other processes
                     ['updateDom']
 
@@ -35,23 +34,15 @@ define(['RequireProxy'], function (Proxy) {
                 controller.header = headerValueTupe === 'string'? {text:header}: header;
             },
             initRender: function (batman) {
-                var controller = this, $element = $(controller.element);
-                if ($element[0].tagName.toUpperCase() !== 'INPUT') {
-                    TemplateManager.render('textBox', controller, function(html){
-                        controller.$input = $(html);
-                        batman.notify();
-                    });
-                    // require(['text!../templates/textBox.html'], function (template) {
-                    //     controller.$input = $(Mustache.render(template,controller));
-                    //     batman.notify();
-                    // });
-                } else {
-                    controller.$input = $element;
+                var controller = this;
+                TemplateManager.render('textBox', controller, function(html){
+                    controller.$conatiner = $(html);
+                    controller.$input = controller.$conatiner.find('.catea-input');
                     batman.notify();
-                }
+                });
             },
             updateDom: function(){
-                $(this.element).append(this.$input);
+                $(this.element).append(this.$conatiner);
             },
             initProps: function () {
                 var controller = this, opts = controller.options, $input = controller.$input;
@@ -125,7 +116,7 @@ define(['RequireProxy'], function (Proxy) {
                 controller._value.subscribe(function (value) {
                     $input.val(value);
                     controller.valueLength(value === null ? 0 : value.length);
-                });
+                }).notify();
             },
             afterInit: function () {
 
