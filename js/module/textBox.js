@@ -1,6 +1,6 @@
 define(['RequireProxy'], function (Proxy) {
     'use strict';
-    var Base = Proxy.get('UiBase'), utils = Proxy.get('utils'), Spy = Proxy.get('Spy'), $ = window.$;
+    var Base = Proxy.get('UiBase'), utils = Proxy.get('utils'), Spy = Proxy.get('Spy'), Mustache = Proxy.get('Mustache'), $ = Proxy.get('jquery');
     // 'text!../templates/textBox.html'
     return {
         parent: 'UiBase',
@@ -14,7 +14,7 @@ define(['RequireProxy'], function (Proxy) {
                     //               other - Means your method is synchronous. 'notify' method of 'batman' can still be called, it won't make any difference.
                     // arguments:  They should be arranged in accordance with the definition of the method.
                     ['initVars'],               // Declare Initialize variables
-                    ['initRender', true],   // Initial rendering
+                    ['initRender', true],       // Initial rendering
                     ['initProps'],              // Set initialize properties
                     ['initCss'],   // Initialize CSS
                     ['initEvents'],             // Binding events for this main dom object
@@ -28,15 +28,16 @@ define(['RequireProxy'], function (Proxy) {
                 controller.isReadonly = Spy.observable(utils.getBoolean(opts.readonly));
                 controller.disabled = Spy.observable(utils.getBoolean(opts.disabled));
                 controller.valueLength = Spy.observable(0);
-                controller.unSupportPlaceholder = !utils.isSupported('input', 'placeholder');
+                var header = opts.header, headerValueTupe = utils.atomicTypeOf(header);
+                controller.header = headerValueTupe === 'string'? {text:header}: header;
             },
             initRender: function (batman) {
                 var controller = this, $element = $(controller.element);
                 if ($element[0].tagName.toUpperCase() !== 'INPUT') {
                     require(['text!../templates/textBox.html'], function (template) {
                         window.requestAnimationFrame(function () {
-                            $element.empty().append(template);
-                            controller.$input = $element.children('input');
+                            $element.empty().append(Mustache.render(template,controller));
+                            controller.$input = $element.find('input');
                             batman.notify();
                         });
                     });
@@ -49,7 +50,7 @@ define(['RequireProxy'], function (Proxy) {
                 var controller = this, opts = controller.options, $input = controller.$input;
                 controller.element.type = 'text';
                 $input.attr('maxlength', opts.maxlength).attr('spellcheck', utils.getBoolean(opts.spellcheck));
-                if (!controller.unSupportPlaceholder) $input.attr('placeholder', opts.placeholder);
+                $input.attr('placeholder', opts.placeholder);
             },
             initCss: function () {
                 var controller = this, opts = controller.options;
@@ -67,19 +68,14 @@ define(['RequireProxy'], function (Proxy) {
                     validateTimer = null;
                 validateDely = validateDely === null ? 300 : validateDely;
                 $input.bind('input propertychange', function () {
-                    var value = controller.$input.val();
-                    controller.value(controller.unSupportPlaceholder && $input.not(':focus') && value === opts.placeholder ? null : value);
+                    var value = $input.val();
+                    if(utils.getString(value) === controller.value()) return;
+                    controller.value(value);
                     if (validate) {
                         if (validateTimer !== null) clearTimeout(validateTimer);
                         validateTimer = setTimeout(function () {
                             controller.validate.apply(controller);
                         }, validateDely);
-                    }
-                });
-                $input.bind('click focus', function () {
-                    if (controller.unSupportPlaceholder && controller.value() === null) {
-                        $input.val(null);
-                        $input.removeClass('empty');
                     }
                 });
                 // Keep it for a while, The function of disabling keystrokes is not fully available.
@@ -110,45 +106,22 @@ define(['RequireProxy'], function (Proxy) {
                     // }
                     // return match == false ? true : false;
                 });
-                if (controller.unSupportPlaceholder) {
-                    $input.bind('blur', function () {
-                        if (controller.value() === null) {
-                            $input.addClass('empty');
-                            $input.val(opts.placeholder);
-                        }
-                    });
-                }
             },
             initSubscribers: function () {
-                var controller = this, $input = controller.$input, opts = controller.options;
+                var controller = this, $input = controller.$input;
                 controller.isReadonly.subscribe(function (readonly) {
                     readonly ? $input.attr('readonly', 'readonly') : $input.removeAttr('readonly');
                 }).notify();
                 controller.disabled.subscribe(function (disabled) {
                     disabled ? $input.attr('disabled', true) : $input.removeAttr('disabled');
                 }).notify();
-                var valueObserver = controller._value.subscribe(function (value) {
+                controller._value.subscribe(function (value) {
                     $input.val(value);
                     controller.valueLength(value === null ? 0 : value.length);
                 });
-                if (controller.unSupportPlaceholder) {
-                    valueObserver.beforeChange(function (_value) {
-                        var value = controller.convertValue(_value);
-                        if (value === null && $input.not(':focus')) {
-                            $input.val(opts.placeholder);
-                            return false;
-                        } else {
-                            return true;
-                        }
-                    });
-                }
             },
             afterInit: function () {
-                var controller = this, $input = controller.$input;
-                if (controller.unSupportPlaceholder && controller.value() === null && $input.not(':focus')) {
-                    $input.addClass('empty');
-                    $input.val(controller.options.placeholder);
-                }
+
             }
         },
         methods: $.extend({}, Base.methods, {
@@ -175,13 +148,18 @@ define(['RequireProxy'], function (Proxy) {
                 if (utils.getBoolean(this.options.required) && this.value() === null) return 'required';
             },
             minlength: function () {
-                var controller = this;
-                controller.minlength === undefined ? controller.minlength = utils.getNumber(controller.options.minlength) : '';
-                var minLength = controller.minlength;
+                var minLength = utils.getNumber(this.options.minlength);
                 if (minLength !== null && minLength > 0) {
-                    var value = this.value();
-                    if (value === null || value.length < minLength) {
+                    if (this.valueLength() < minLength) {
                         return 'minlength'
+                    }
+                }
+            },
+            maxlength: function () {
+                var maxLength = utils.getNumber(this.options.maxength);
+                if (maxLength !== null && maxLength > 0) {
+                    if (this.valueLength() > maxLength) {
+                        return 'maxlength'
                     }
                 }
             },
@@ -194,18 +172,20 @@ define(['RequireProxy'], function (Proxy) {
         }),
         messages: $.extend({}, Base.messages, {
             required: '{{options.prompt}}不能为为空',
-            minlength: '{{options.prompt}}未达最小长度：{{minlength}}',
+            minlength: '{{options.prompt}}未达最小长度：{{options.minlength}}，当前：{{valueLength}}',
+            maxlength: '{{options.prompt}}超过最大长度：{{options.maxlength}}，当前：{{valueLength}}',
             pattern: '{{options.prompt}}{{options.pattern-prompt}}'
         }),
         defaults: $.extend({}, Base.defaults, {
             name: null,
             prompt: '录入内容',
+            header: null,
             required: false,
             defaultValue: null,
             placeholder: null,
             textAlign: 'left',
             maxlength: null,
-            minlength: -1,
+            minlength: null,
             className: null,
             readonly: false,
             disabled: false,
@@ -215,8 +195,20 @@ define(['RequireProxy'], function (Proxy) {
             spellcheck: false,
             validate: true,
             'validate-delay': 300,
-            'validate-handler': function(errorMsgArray){
-
+            'validate-handler': function (errors, element) {
+                var $el = $(this.element);
+                if (errors && errors.length > 0) {
+                    var $errorBox = $el.next('.catea-error-prompt');
+                    if ($errorBox.length === 0) {
+                        $errorBox = $('<span class="catea-error-prompt"></span>');
+                        $errorBox.insertAfter($el);
+                    }
+                    $errorBox.html('* ' + errors.join('；<br>* ')).show();
+                    $el.removeClass('success').addClass('error');
+                } else {
+                    $(element).next('.catea-error-prompt').empty().hide();
+                    $el.removeClass('error').addClass('success');
+                }
             }
             //illegal: "(){}[]%;\"\'"  Keep it for a while, The function of disabling keystrokes is not fully available.
         }),

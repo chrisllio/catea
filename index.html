@@ -2,9 +2,12 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>MAINFRAME</title>
+    <title>Welcome</title>
     <link rel="stylesheet" type="text/css" href="css/catea.css">
     <link rel="stylesheet" type="text/css" href="css/form.css">
+    <link rel="stylesheet" type="text/css" href="css/layout.css">
+    <link rel="stylesheet" type="text/css" href="css/font-awesome.min.css">
+    <script type="text/javascript" src="js/lib/jqueryjs/jquery-1.11.2.min.js"></script>
     <!--[if lt IE 9]>
     <script type="text/javascript" src="js/ie-compat.js"></script>
     <![endif]-->
@@ -12,18 +15,17 @@
     <script type="text/javascript">
         function init(){
             //$("#context").execute('enable').execute('readonly',true);
-            $(document).click(function(){
-                console.log($("#context").textBox('getErrorMessages'));
-            });
+//            $(document).click(function(){
+//                console.log($("#context").textBox('getErrorMessages'));
+//            });
         }
     </script>
 </head>
 <body>
-<h1>Hello RequireJs</h1>
-<textBox1 defaultValue="asdasdsd" className="no-border" width="1px"></textBox1>
-<div>
-    <input id="context" class="catea-widget" catea-type="textBox" name="test" defaultValue="asdasdsd" >
-    <input class="catea-widget" catea-type="textBox" name="test" defaultValue="asd2asdsd" >
+<div class="catea-container">
+    <h1>Catea</h1>
+    <h2>TextBox</h2>
+    <textBox id="context" name="name" defaultValue="Catea" header="Name:"></textBox>
 </div>
 
 </body>

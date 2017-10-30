@@ -1,44 +1,149 @@
-.catea-widget {
+input {
+    outline: none;
     font-family: inherit;
     font-size: inherit;
     line-height: inherit;
 }
-input.catea-widget::-ms-clear {
+
+input::-ms-clear {
     display: none;
 }
-input.catea-widget{
-    border-radius: 3px;
-    border: 1px solid #999;
-    padding: 5px 10px;
-    color:#333;
-    margin: 0px;
-    width: 100%;
-    min-width: 120px;
+
+input.catea-input {
     position: relative;
     display: block;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    padding: 5px 10px;
+    color: #333;
+    font-size: 14px;
+    height: 34px;
+    margin: 0px;
+    width: 100%;
+    min-width: 100px;
     box-sizing: border-box;
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
 }
-input[disabled].catea-widget{
+
+input[disabled].catea-input {
     background-color: #ebebe4;
     cursor: not-allowed;
 }
-input[readonly].catea-widget{
+
+input[readonly].catea-input {
     background-color: #f1f1f1;
 }
-input.catea-widget.big{
-    font-size: 1.5em;
+
+.btn {
+    display: inline-block;
+    padding: 6px 12px;
+    margin-bottom: 0;
+    font-size: 14px;
+    font-weight: normal;
+    line-height: 1.42857143;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    border-radius: 4px;
+    color: #333;
+    background-color: #fff;
+    border: 1px solid #ccc;
 }
-input.catea-widget.large{
-    font-size: 2em;
+
+.catea-group-inline {
+    position: relative;
+    display: table;
+    border-collapse: separate;
+    width: 100%;
+    white-space: nowrap;
 }
-input.catea-widget.sm{
-    font-size: .8em;
+
+.catea-group-inline > .addon.header{
+    font-weight: bold;
 }
-input.catea-widget.no-border{
-    border:none;
+.catea-group-inline > .group-control {
+    width: 100%;
+    margin: 0;
+    display: table-cell;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    border-collapse: separate;
 }
-input.catea-widget.empty {
-    color: #868686;
+.catea-group-inline > .addon {
+    margin: 0;
+    width: 1%;
+    white-space: nowrap;
+    vertical-align: middle;
+    display: table-cell;
+    *display: inline-block;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    padding: 6px 12px;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1;
+    color: #555;
+    border-collapse: separate;
+}
+
+.catea-group-inline > .addon:first-child {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.catea-group-inline > .addon:not(:first-child):not(:last-child) {
+    border-radius: 0;
+    border-left: 0;
+}
+
+.catea-group-inline > .addon:last-child {
+    border-left: 0;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+}
+
+.catea-group-inline > .group-control:not(:first-child):not(:last-child) {
+    border-radius: 0;
+    border-left: 0;
+}
+
+.catea-group-inline > .group-control:first-child:not(:last-child) {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+.catea-group-inline > .group-control:last-child:not(:first-child) {
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-left: 0;
+}
+
+.catea-widget.catea-widget.error {
+    border-color: #bb1414;
+}
+
+.catea-widget.catea-widget.success {
+    border-color: #1d581d;
+}
+
+.catea-error-prompt {
+    font-size: 12px;
+    color: #bb1414;
+    padding: 10px 5px;
+    display: block;
+    cursor: pointer;
+    position: absolute;
+    z-index: 1;
+    background: #fff;
+    /*border: 1px solid #ddd;*/
+    /*border-radius: 4px;*/
+    /*min-width: 120px;*/
 }

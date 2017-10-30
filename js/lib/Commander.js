@@ -104,10 +104,10 @@ define(['Class'], function (Class) {
                             commander.callAction(actionName, command);
                             if (typeof commander.callback === 'function') commander.callAction(commander.callback, []);
                             commander.busy = false;
-                            break;
                         } else {
                             commander.callAction(actionName, command);
                         }
+                        break;
                     } else {
                         commander.callAction(actionName, command);
                         if (commander.fighted + 1 >= commander.battleCount) {
