@@ -10,15 +10,15 @@ require(['config'], function (requireConfig) {
     requirejs.config(requireConfig);
     if (window.jQuery) {
         define('jquery', [], function () {
-            return window.jQuery
+            return window.jQuery;
         });
     }
     if (window.JSON && window.JSON.parse) {
         define('json2', [], function () {
-            window.JSON
+            window.JSON;
         });
     }
-    require(['UiManager', 'jquery', 'dataCenter', 'dataAdapter-default', 'prototype', 'Commander', 'json2', 'text', 'RequireProxy'], function (UiManager, $, dataCenter) {
+    require(['UiManager', 'jquery', 'dataCenter', 'defaultDataAdapter', 'prototype', 'Commander', 'json2', 'text', 'RequireProxy'], function (UiManager, $, dataCenter) {
         $.catea = $.extend($.catea, {}, {
             DataCenter: dataCenter,
             UiManager: UiManager

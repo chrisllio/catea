@@ -131,7 +131,7 @@ define(['jquery', 'Class', 'uiConstants', 'Spy', 'utils', 'Commander', 'Mustache
         dataRenderer: null,
         settings: {
             // core version
-            'core-version': '1.0.0.20171031_alpha ',
+            'core-version': '1.0.0.20171031_alpha',
             version: '1.0.0'
             // When widget is init , following actions of initRender wait for it's completion or not.
         }

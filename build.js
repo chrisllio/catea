@@ -7,13 +7,28 @@
         shim: {},
         modules: [{
             name: 'catea',
-            exclude: ['module', 'jquery']
+            exclude: ['module', 'jquery', 'text']
         }, {
             name: 'catea-all',
             create: true,
             include: ['catea', 'templatesBook'],
-            exclude: ['module', 'jquery']
+            exclude: ['module', 'jquery', 'text']
         }],
+        optimize: 'uglify2',
+        skipDirOptimize: true,
+        uglify2: {
+            output: {
+                beautify: false,
+                preamble: '/*! catea v1.0.0.20171031_alpha %> */'
+            },
+            compress: {
+                toplevel: true
+            },
+            warnings: true,
+            mangle: {
+                toplevel: true
+            }
+        },
         findNestedDependencies: true,
         removeCombined: false,
         fileExclusingRegExp: /^(r|build)\.js$|^(.git)|^(.js)|^(.vscode)$/
@@ -76,10 +91,9 @@
     for (var name in widgets) {
         if (widgets.hasOwnProperty(name)) {
             var cfg = widgets[name], path = cfg.path, type = cfg.buildType;
-            // 将模板与组件压缩到一起
             config.paths[name] = path ? path : ('module/' + name);
             // 将组件加入模块定义，排除其他依赖
-            // config.modules.push({name: name, exclude: ['RequireProxy', 'jquery', 'module']});
+            config.modules.push({name: name, exclude: ['RequireProxy', 'jquery']});
             // 制作完整模块、制作仅包含某类组件的模块
             var findMyType = false;
             config.modules.forEach(function (module, index) {

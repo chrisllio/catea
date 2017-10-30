@@ -1,6 +1,6 @@
 /**
  * ------------------------------------------------------------------------------------
- * - Commander                                                                        -
+ * - Commander by Xris.Yang                                                                        -
  * ------------------------------------------------------------------------------------
  * Description:
  * --------
@@ -27,11 +27,6 @@
  *        other - Means your method is synchronous. 'notify' method of 'batman' can still be called, it won't make any difference.
  *    arguments:  The rest arguments should be arranged in accordance with the definition of the method.
  *------------------------------------------------------------------------------------
- * @author Xris.Yang
- * @version 1.0.0
- * @license Commander.js 1.0.0 Copyright Xris.Yang.
- * Released under MIT license
- * ------------------------------------------------------------------------------------
  */
 define(['Class'], function (Class) {
     'use strict';

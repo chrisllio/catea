@@ -23,8 +23,7 @@ define(function(){
             TemplateManager: 'core/templateManager',
             RequireProxy: 'core/require-proxy',
             dataCenter: 'core/dataCenter',
-            'dataAdapter-default': 'core/dataAdapter-dc'
-
+            defaultDataAdapter: 'core/dataAdapter-dc'
         },
         shim: {},
         widgets: {

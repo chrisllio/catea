@@ -69,7 +69,7 @@ define(['jquery', 'Class', 'UiBase', 'AnimationFrame', 'Spy', 'utils', 'Map', 'c
                             methods = widgetMap.get(widgetName + '.methods'),
                             widgetSetting = widgetMap.get(widgetName + '.settings'),
                             dataAdapter = config.widgets[widgetName].dataAdapter;
-                        dataAdapter = dataAdapter ? dataAdapter : 'dataAdapter-default';
+                        dataAdapter = dataAdapter ? dataAdapter : 'defaultDataAdapter';
                         require([dataAdapter], function (dataAdapter) {
                             new widgetClass(element, opts, widgetSetting, widgetName, dataAdapter, function () {
                                 var controller = this;
