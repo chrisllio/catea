@@ -1,13 +1,14 @@
 define(['RequireProxy'], function (Proxy) {
     'use strict';
-    var Base = Proxy.get('UiBase'), utils = Proxy.get('utils'), Spy = Proxy.get('Spy'), Mustache = Proxy.get('Mustache'), $ = Proxy.get('jquery');
+    // These modules should be already loaded.
+    var Base = Proxy.get('UiBase'), utils = Proxy.get('utils'), Spy = Proxy.get('Spy'), TemplateManager = Proxy.get('TemplateManager'), $ = Proxy.get('jquery');
     // 'text!../templates/textBox.html'
     return {
         parent: 'UiBase',
         core: {
             commands: function () {
                 return [
-                    // The command group is a two-dimensional array, for example: [command1,command2……]
+                    // The command group is a two-dimensional array, for example: [comma nd1,command2……]
                     // Each command is an One-dimensional array, complete example as: ['methodName', false(or true), arg1, arg2……].
                     // methodName: This is necessary.
                     // asynchronous: true  - You must call the method 'notify' of additional parameter 'batman' to notice the Commander to continue next command.
@@ -20,7 +21,9 @@ define(['RequireProxy'], function (Proxy) {
                     ['initEvents'],             // Binding events for this main dom object
                     ['initSubscribers'],        // Subscribe variables
                     ['value', false, this.options.defaultValue], // Set initialize value
-                    ['afterInit']               // Other processes
+                    ['afterInit'],              // Other processes
+                    ['updateDom']
+
                 ];
             },
             initVars: function () {
@@ -34,17 +37,21 @@ define(['RequireProxy'], function (Proxy) {
             initRender: function (batman) {
                 var controller = this, $element = $(controller.element);
                 if ($element[0].tagName.toUpperCase() !== 'INPUT') {
-                    require(['text!../templates/textBox.html'], function (template) {
-                        window.requestAnimationFrame(function () {
-                            $element.empty().append(Mustache.render(template,controller));
-                            controller.$input = $element.find('input');
-                            batman.notify();
-                        });
+                    TemplateManager.render('textBox', controller, function(html){
+                        controller.$input = $(html);
+                        batman.notify();
                     });
+                    // require(['text!../templates/textBox.html'], function (template) {
+                    //     controller.$input = $(Mustache.render(template,controller));
+                    //     batman.notify();
+                    // });
                 } else {
                     controller.$input = $element;
                     batman.notify();
                 }
+            },
+            updateDom: function(){
+                $(this.element).append(this.$input);
             },
             initProps: function () {
                 var controller = this, opts = controller.options, $input = controller.$input;

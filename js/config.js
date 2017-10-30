@@ -20,6 +20,7 @@ define(function(){
             UiManager: 'core/uiManager',
             utils: 'core/utils',
             Spy: 'core/spy',
+            TemplateManager: 'core/templateManager',
             RequireProxy: 'core/require-proxy'
         },
         shim: {},

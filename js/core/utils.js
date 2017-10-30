@@ -27,14 +27,6 @@ define(['AnimationFrame'], function () {
             });
             return target;
         },
-        moveAttributes: function (from, to) {
-            var $from = $(from);
-            $($from[0].attributes).each(function () {
-                if (this.nodeName && !this.nodeName.startWith('_') && !this.nodeName.startWith('_'))
-                    $(to).attr(this.nodeName, this.value);
-                $from.removeAttr(this.nodeName);
-            });
-        },
         /**
          * 查找并返回方法，可接受function或string，找不到时返回Null
          * @param value

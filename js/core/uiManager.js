@@ -1,4 +1,4 @@
-define(['jquery', 'Class', 'UiBase', 'AnimationFrame', 'Spy', 'utils', 'Map', 'config', 'prototype'], function ($, Class, Base, AnimationFrame, Spy, utils, Map, config) {
+define(['jquery', 'Class', 'UiBase', 'AnimationFrame', 'Spy', 'utils', 'Map', 'config', 'Mustache', 'prototype'], function ($, Class, Base, AnimationFrame, Spy, utils, Map, config, Mustache) {
     'use strict';
     var widgetMap = new Map(),
         controllerShellDataName = '__widget_shEll_dAta_keY_',
@@ -53,6 +53,12 @@ define(['jquery', 'Class', 'UiBase', 'AnimationFrame', 'Spy', 'utils', 'Map', 'c
             }
         },
         manager = {
+            getTemplate: function(html){
+                if(!templateMap[html]) {
+                    templateMap[html] = Mustache.parse(html);
+                }
+                return templateMap[html];
+            },
             render: function (element, widgetName, options, renderCallback) {
                 var $element = $(element), shell = $element.data(controllerShellDataName);
                 if (shell) {

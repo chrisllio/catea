@@ -11,7 +11,7 @@
         }, {
             name: 'catea-all',
             create: true,
-            include: ['catea'],
+            include: ['catea', 'templatesBook'],
             exclude: ['module', 'jquery']
         }],
         findNestedDependencies: true,
@@ -53,6 +53,24 @@
     var widgets = (new Function('return ' + requirejsWidgets))();
     // read configs from project end.
 
+    // create templatesBook.js as templates begin. -- by Xris.Yang
+    var templates = fs.readdirSync('./templates'), defines = '';
+    for (i = 0; i < templates.length; i++) {
+        var fileName = templates[i], content = readFile("./templates/" + fileName, "utf-8");
+        if (fileName.toLowerCase().indexOf('.html') + 5 === fileName.length) {
+            content = content.replace(/[\r]/g, "");
+            content = content.replace(/[\n]/g, "");
+            content = content.replace(/>[\s+>]+</g, "><");
+            content = content.replace(/>[\s+>]+{{/g, ">{{");
+            content = content.replace(/}}[\s+>]+</g, "}}<");
+            content = content.replace(/"/g, "\\\"");
+            defines += 'define(\'text!../templates/' + fileName + '\',[],function(){return "' + content + '"});\n';
+        }
+    }
+    fs.writeFileSync('./js/templatesBook.js', defines, 'utf-8');
+    config.paths.templates = 'templatesBook';
+    // create templatesBook.js as templates end.
+
     // create widget modules and classification modules start.  -- by Xris.Yang
     // Merge templates into widgets but ignore other dependencies by encapsulate 'require' into 'RequireShell'. by Xris.Yang
     for (var name in widgets) {
@@ -61,7 +79,7 @@
             // 将模板与组件压缩到一起
             config.paths[name] = path ? path : ('module/' + name);
             // 将组件加入模块定义，排除其他依赖
-            config.modules.push({name: name, exclude: ['RequireProxy', 'jquery', 'module']});
+            // config.modules.push({name: name, exclude: ['RequireProxy', 'jquery', 'module']});
             // 制作完整模块、制作仅包含某类组件的模块
             var findMyType = false;
             config.modules.forEach(function (module, index) {
@@ -75,7 +93,7 @@
                 config.modules.push({
                     name: 'catea-' + type,
                     create: true,
-                    include: ['catea', name],
+                    include: ['catea', 'templatesBook', name],
                     exclude: ['module', 'jquery']
                 });
             }

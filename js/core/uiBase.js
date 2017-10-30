@@ -1,4 +1,4 @@
-define(['jquery', 'Class', 'uiConstants', 'Spy', 'utils', 'Commander', 'Mustache', 'prototype', 'json2'], function ($, Class, Constants, Spy, utils, Commander, Mustache) {
+define(['jquery', 'Class', 'uiConstants', 'Spy', 'utils', 'Commander', 'Mustache', 'TemplateManager', 'prototype'], function ($, Class, Constants, Spy, utils, Commander, Mustache) {
     'use strict';
     return {
         /**

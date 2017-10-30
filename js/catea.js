@@ -11,7 +11,10 @@ require(['config'], function (requireConfig) {
     if(window.jQuery) {
         define('jquery',[],function(){return window.jQuery});
     }
-    require(['UiManager', 'jquery', 'Commander'], function (UiManager,$) {
+    if(window.JSON && window.JSON.parse) {
+        define('json2',[],function(){window.JSON});
+    }
+    require(['UiManager', 'jquery', 'Commander', 'json2', 'text', 'RequireProxy'], function (UiManager,$) {
         $.catea = $.extend($.catea, {}, {uiManager: UiManager});
         var before = window.pre_init, after = window.init;
         if (typeof before === 'function') {
