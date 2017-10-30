@@ -12,7 +12,6 @@ define(['dataCenter', 'Class'], function (dc, Class) {
         },
         set: function (value) {
             dc.set(this.name, value, this.controller);
-            console.log(value)
         }
     })
 });
